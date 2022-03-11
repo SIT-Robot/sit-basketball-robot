@@ -1,0 +1,44 @@
+<launch>
+    <arg name="x_pos" default="0.0" />
+    <arg name="y_pos" default="0.0" />
+    <arg name="z_pos" default="0.0" />
+
+    <arg name="model_python" default="python3 $(find sit_basketball_description)/scripts/basketball_description.py" />
+    <!-- 在参数服务器载入urdf文件 -->
+    <param name="robot_description" command="$(arg model_python)" />
+
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 -1.57 0 -1.57 /camera_link /pointcloud" /> -->
+    <!-- 启动 gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <!-- <arg name="world_name" value="$(find sit_service_description)/worlds/RoboCup2021Home.world"/> -->
+        <!-- <arg name="world_name" value="$(find sit_basketball_map)/world/basketball_world.world"/> -->
+        <arg name="paused" value="false" />
+        <arg name="use_sim_time" value="true" />
+        <arg name="gui" value="true" />
+        <arg name="headless" value="false" />
+        <arg name="debug" value="false" />
+    </include>
+    <!-- 在 gazebo 中显示机器人模型 -->
+    <node pkg="gazebo_ros" 
+        type="spawn_model" 
+        name="spawn_urdf" 
+        args="-urdf -model sit_basketball_robot -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
+    <!-- 关节状态发布 -->
+    <!-- <node 
+        name="joint_state_publisher" 
+        pkg="joint_state_publisher" 
+        type="joint_state_publisher" 
+        output="screen"/> -->
+    <!-- 机器人状态发布节点 (发布所有静态tf)-->
+    <node name="robot_state_publisher" 
+        pkg="robot_state_publisher" 
+        type="robot_state_publisher" 
+        output="screen" />
+    <!-- 启动rviz -->
+    <!-- <node 
+        name="rviz" 
+        pkg="rviz" 
+        type="rviz" 
+        args="-d $(find sit_service_description)/config/service_robot_viz.rviz"
+        output="screen"/> -->
+</launch>

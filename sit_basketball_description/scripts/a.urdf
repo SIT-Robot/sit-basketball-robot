@@ -1,0 +1,769 @@
+<?xml version="1.0" ?>
+<robot name="sit_service_robot" version="1.0">
+  <link name="base_footprint"/>
+  <link name="base_link">
+    <inertial>
+      <mass value="8"/>
+      <inertia ixx="0.125006" ixy="0.0" ixz="0.0" iyy="0.125006" iyz="0.0" izz="0.25"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder length="0.003" radius="0.25"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.003" radius="0.25"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="base_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <joint name="base_footprint_to_base_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.03"/>
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+  </joint>
+  <link name="laser_link">
+    <inertial>
+      <mass value="0.16"/>
+      <inertia ixx="9.866666666666668e-05" ixy="0.0" ixz="0.0" iyy="9.866666666666668e-05" iyz="0.0" izz="6.666666666666668e-05"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://sit_service_description/meshes/hokuyo.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.07"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_link_to_laser_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.22 0 0.036500000000000005"/>
+    <parent link="base_link"/>
+    <child link="laser_link"/>
+  </joint>
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="1.6666666666666667e-05" ixy="0.0" ixz="0.0" iyy="1.6666666666666667e-05" iyz="0.0" izz="2.666666666666667e-05"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.04 0.04 0.02"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.04 0.02"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="imu_link">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="base_link_to_imu_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 -0.0115"/>
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+  </joint>
+  <link name="left_drive_wheel">
+    <inertial>
+      <mass value="0.8"/>
+      <inertia ixx="0.0008266666666666666" ixy="0.0" ixz="0.0" iyy="0.0008266666666666666" iyz="0.0" izz="0.0014399999999999999"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder length="0.04" radius="0.06"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.04" radius="0.06"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="left_drive_wheel">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="base_link_to_left_drive_wheel_joint" type="continuous">
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0.16 0.028499999999999998"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="left_drive_wheel"/>
+  </joint>
+  <transmission name="base_link_to_left_drive_wheel_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_link_to_left_drive_wheel_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_link_to_left_drive_wheel_joint_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="right_drive_wheel">
+    <inertial>
+      <mass value="0.8"/>
+      <inertia ixx="0.0008266666666666666" ixy="0.0" ixz="0.0" iyy="0.0008266666666666666" iyz="0.0" izz="0.0014399999999999999"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder length="0.04" radius="0.06"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.04" radius="0.06"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="right_drive_wheel">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="base_link_to_right_drive_wheel_joint" type="continuous">
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 -0.16 0.028499999999999998"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="right_drive_wheel"/>
+  </joint>
+  <transmission name="base_link_to_right_drive_wheel_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_link_to_right_drive_wheel_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_link_to_right_drive_wheel_joint_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="front_support_wheel">
+    <inertial>
+      <mass value="0.3"/>
+      <inertia ixx="2.7e-05" ixy="0.0" ixz="0.0" iyy="2.7e-05" iyz="0.0" izz="2.7e-05"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <sphere radius="0.015"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.015"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="front_support_wheel">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="base_link_to_front_support_wheel_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.16 0 -0.0165"/>
+    <parent link="base_link"/>
+    <child link="front_support_wheel"/>
+  </joint>
+  <link name="battery2base_metal_link">
+    <inertial>
+      <mass value="0.15"/>
+      <inertia ixx="0.000285" ixy="0.0" ixz="0.0" iyy="0.000285" iyz="0.0" izz="7.5e-06"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.075"/>
+      <geometry>
+        <cylinder length="0.15" radius="0.01"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.075"/>
+      <geometry>
+        <cylinder length="0.15" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="battery2base_metal_link">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="base_link_to_battery2base_metal_link_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="battery2base_metal_link"/>
+  </joint>
+  <link name="battery_base_link">
+    <inertial>
+      <mass value="5"/>
+      <inertia ixx="0.050003750000000007" ixy="0.0" ixz="0.0" iyy="0.050003750000000007" iyz="0.0" izz="0.1"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder length="0.003" radius="0.2"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.003" radius="0.2"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="battery_base_link">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="battery2base_metal_link_to_battery_base_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.15"/>
+    <parent link="battery2base_metal_link"/>
+    <child link="battery_base_link"/>
+  </joint>
+  <link name="left_battery_link">
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.003825" ixy="0.0" ixz="0.0" iyy="0.003825" iyz="0.0" izz="0.005625000000000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.15 0.15 0.09"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.0 0.0 0.8 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.15 0.15 0.09"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="left_battery_link">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <joint name="battery_base_link_to_left_battery_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.076 0.0465"/>
+    <parent link="battery_base_link"/>
+    <child link="left_battery_link"/>
+  </joint>
+  <link name="right_battery_link">
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.003825" ixy="0.0" ixz="0.0" iyy="0.003825" iyz="0.0" izz="0.005625000000000001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.15 0.15 0.09"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.0 0.0 0.8 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.15 0.15 0.09"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="right_battery_link">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <joint name="battery_base_link_to_right_battery_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 -0.076 0.0465"/>
+    <parent link="battery_base_link"/>
+    <child link="right_battery_link"/>
+  </joint>
+  <link name="arm2battery_metal_link">
+    <inertial>
+      <mass value="0.3"/>
+      <inertia ixx="0.0022574999999999995" ixy="0.0" ixz="0.0" iyy="0.0022574999999999995" iyz="0.0" izz="1.5e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.15"/>
+      <geometry>
+        <cylinder length="0.3" radius="0.01"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.15"/>
+      <geometry>
+        <cylinder length="0.3" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="arm2battery_metal_link">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="battery_base_link_to_arm2battery_metal_link_joint" type="fixed">
+    <parent link="battery_base_link"/>
+    <child link="arm2battery_metal_link"/>
+  </joint>
+  <link name="arm_base_link">
+    <inertial>
+      <mass value="4"/>
+      <inertia ixx="0.040003000000000004" ixy="0.0" ixz="0.0" iyy="0.040003000000000004" iyz="0.0" izz="0.08000000000000002"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder length="0.003" radius="0.2"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.003" radius="0.2"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="arm_base_link">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="arm2battery_metal_link_to_arm_base_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.3"/>
+    <parent link="arm2battery_metal_link"/>
+    <child link="arm_base_link"/>
+  </joint>
+  <link name="camera2arm_metal_link">
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.010429166666666668" ixy="0.0" ixz="0.0" iyy="0.010429166666666668" iyz="0.0" izz="2.5e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.25"/>
+      <geometry>
+        <cylinder length="0.5" radius="0.01"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.25"/>
+      <geometry>
+        <cylinder length="0.5" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="camera2arm_metal_link">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="arm_base_link_to_camera2arm_metal_link_joint" type="fixed">
+    <parent link="arm_base_link"/>
+    <child link="camera2arm_metal_link"/>
+  </joint>
+  <link name="camera_base_link">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0008340833333333335" ixy="0.0" ixz="0.0" iyy="0.00750075" iyz="0.0" izz="0.008333333333333333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.3 0.1 0.003"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.3 0.1 0.003"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="camera_base_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <joint name="camera2arm_metal_link_to_camera_base_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.5"/>
+    <parent link="camera2arm_metal_link"/>
+    <child link="camera_base_link"/>
+  </joint>
+  <material name="aluminum">
+    <color rgba="0.5 0.5 0.5 0.8"/>
+  </material>
+  <material name="plastic">
+    <color rgba="0.1 0.1 0.1 0.8"/>
+  </material>
+  <joint name="camera_joint" type="fixed">
+    <origin rpy="0.0 0.0 0.0" xyz="0.15 0.0 0.0"/>
+    <parent link="camera_base_link"/>
+    <child link="camera_bottom_screw_frame"/>
+  </joint>
+  <link name="camera_bottom_screw_frame"/>
+  <joint name="camera_link_joint" type="fixed">
+    <origin rpy="0.0 0.0 0.0" xyz="0.010600000000000002 0.0175 0.0125"/>
+    <parent link="camera_bottom_screw_frame"/>
+    <child link="camera_link"/>
+  </joint>
+  <link name="camera_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <mass value="0.072"/>
+      <inertia ixx="0.003881243" ixy="0.0" ixz="0.0" iyy="0.00049894" iyz="0.0" izz="0.003879257"/>
+    </inertial>
+    <visual>
+      <origin rpy="1.5707963267948966 0.0 1.5707963267948966" xyz="0.0043 -0.0175 0.0"/>
+      <geometry>
+        <mesh filename="package://realsense2_description/meshes/d435.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0175 0.0"/>
+      <geometry>
+        <box size="0.02505 0.09 0.025"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="arm_screw_motor">
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.0003708333333333334" ixy="0.0" ixz="0.0" iyy="0.0003708333333333334" iyz="0.0" izz="0.00020833333333333337"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.08"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.08"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="arm_screw_motor">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <joint name="arm_base_link_to_arm_screw_motor_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.15 0 0.0415"/>
+    <parent link="arm_base_link"/>
+    <child link="arm_screw_motor"/>
+  </joint>
+  <link name="arm_screw_metal_link">
+    <inertial>
+      <mass value="0.4"/>
+      <inertia ixx="0.0053433333333333345" ixy="0.0" ixz="0.0" iyy="0.0053433333333333345" iyz="0.0" izz="2e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.2"/>
+      <geometry>
+        <cylinder length="0.4" radius="0.01"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.2"/>
+      <geometry>
+        <cylinder length="0.4" radius="0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="arm_screw_metal_link">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="arm_screw_motor_to_arm_screw_metal_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.04"/>
+    <parent link="arm_screw_motor"/>
+    <child link="arm_screw_metal_link"/>
+  </joint>
+  <link name="arm_slider_odom"/>
+  <joint name="arm_screw_metal_link_to_arm_slider_odom_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.025"/>
+    <parent link="arm_screw_metal_link"/>
+    <child link="arm_slider_odom"/>
+  </joint>
+  <link name="arm_slider">
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.00020833333333333337" ixy="0.0" ixz="0.0" iyy="0.00020833333333333337" iyz="0.0" izz="0.00020833333333333337"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="arm_slider">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <joint name="arm_slider_odom_to_arm_slider_joint" type="prismatic">
+    <axis xyz="0 0 1"/>
+    <parent link="arm_slider_odom"/>
+    <child link="arm_slider"/>
+    <limit effort="300" lower="0" upper="0.35000000000000003" velocity="0.03"/>
+  </joint>
+  <transmission name="arm_slider_odom_to_arm_slider_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_slider_odom_to_arm_slider_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_slider_odom_to_arm_slider_joint_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="robot_arm">
+    <visual>
+      <origin rpy="0 1.5707963267948966 0" xyz="0.125 0 0"/>
+      <geometry>
+        <cylinder length="0.25" radius="0.02"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 1.5707963267948966 0" xyz="0.125 0 0"/>
+      <geometry>
+        <cylinder length="0.25" radius="0.02"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="arm_slider_to_robot_arm_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.025 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <parent link="arm_slider"/>
+    <child link="robot_arm"/>
+    <limit effort="300" lower="0" upper="0.5235987755982988" velocity="0.01"/>
+  </joint>
+  <gazebo reference="robot_arm">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <transmission name="arm_slider_to_robot_arm_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_slider_to_robot_arm_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_slider_to_robot_arm_joint_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="claw_base">
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="2.6666666666666673e-06" ixy="0.0" ixz="0.0" iyy="2.6666666666666673e-06" iyz="0.0" izz="2.6666666666666673e-06"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.04 0.04 0.04"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.04 0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="claw_base">
+    <material>Gazebo/Black</material>
+  </gazebo>
+  <joint name="robot_arm_to_claw_base_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.27 0 0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="robot_arm"/>
+    <child link="claw_base"/>
+    <limit effort="300" lower="0" upper="0.5235987755982988" velocity="0.01"/>
+  </joint>
+  <transmission name="robot_arm_to_claw_base_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="robot_arm_to_claw_base_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="robot_arm_to_claw_base_joint_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="grasping_frame"/>
+  <joint name="claw_base_to_grasping_frame_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.02 0 0"/>
+    <parent link="claw_base"/>
+    <child link="grasping_frame"/>
+  </joint>
+  <link name="left_finger">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.025 0 0"/>
+      <geometry>
+        <box size="0.05 0.01 0.04"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.025 0 0"/>
+      <geometry>
+        <box size="0.05 0.01 0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="left_finger">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <link name="right_finger">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.025 0 0"/>
+      <geometry>
+        <box size="0.05 0.01 0.04"/>
+      </geometry>
+      <material name="metal">
+        <color rgba="0.403921568627451 0.4745098039215686 0.5254901960784314 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.025 0 0"/>
+      <geometry>
+        <box size="0.05 0.01 0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="right_finger">
+    <material>Gazebo/Metal</material>
+  </gazebo>
+  <joint name="claw_base_to_left_finger_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.02 0.02 0"/>
+    <parent link="claw_base"/>
+    <child link="left_finger"/>
+  </joint>
+  <joint name="claw_base_to_right_finger_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.02 -0.02 0"/>
+    <axis xyz="0 0 1"/>
+    <parent link="claw_base"/>
+    <child link="right_finger"/>
+    <limit effort="300" lower="0" upper="0.5235987755982988" velocity="0.01"/>
+  </joint>
+  <transmission name="claw_base_to_right_finger_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="claw_base_to_right_finger_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="claw_base_to_right_finger_joint_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <gazebo>
+    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="differential_drive_controller">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometrySource>world</odometrySource>
+      <publishOdomTF>true</publishOdomTF>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <publishWheelTF>false</publishWheelTF>
+      <publishTf>true</publishTf>
+      <publishWheelJointState>true</publishWheelJointState>
+      <legacyMode>false</legacyMode>
+      <updateRate>30</updateRate>
+      <leftJoint>base_link_to_left_drive_wheel_joint</leftJoint>
+      <rightJoint>base_link_to_right_drive_wheel_joint</rightJoint>
+      <wheelSeparation>0.32</wheelSeparation>
+      <wheelDiameter>0.12</wheelDiameter>
+      <wheelAcceleration>1</wheelAcceleration>
+      <wheelTorque>10</wheelTorque>
+      <rosDebugLevel>na</rosDebugLevel>
+    </plugin>
+  </gazebo>
+  <gazebo reference="laser_link">
+    <sensor name="head_hokuyo_sensor" type="ray">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.5707963267948966</min_angle>
+            <max_angle>1.5707963267948966</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin filename="libgazebo_ros_laser.so" name="gazebo_ros_head_hokuyo_controller">
+        <topicName>scan</topicName>
+        <frameName>laser_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <gazebo reference="camera_link">
+    <sensor name="camera" type="depth">
+      <always_on>true</always_on>
+      <update_rate>20.0</update_rate>
+      <camera>
+        <horizontal_fov>1.0471975511965976</horizontal_fov>
+        <image>
+          <format>R8G8B8</format>
+          <width>640</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>8.0</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros_openni_kinect.so" name="kinect_camera_controller">
+        <cameraName>camera</cameraName>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>10</updateRate>
+        <imageTopicName>rgb/image_raw</imageTopicName>
+        <depthImageTopicName>depth/image_raw</depthImageTopicName>
+        <pointCloudTopicName>depth/points</pointCloudTopicName>
+        <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+        <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+        <frameName>pointcloud</frameName>
+        <baseline>0.1</baseline>
+        <distortion_k1>0.0</distortion_k1>
+        <distortion_k2>0.0</distortion_k2>
+        <distortion_k3>0.0</distortion_k3>
+        <distortion_t1>0.0</distortion_t1>
+        <distortion_t2>0.0</distortion_t2>
+        <pointCloudCutoff>0.4</pointCloudCutoff>
+      </plugin>
+    </sensor>
+  </gazebo>
+</robot>

@@ -1,0 +1,14 @@
+<launch>
+    <arg 
+        name="filename" 
+        value="$(find sit_basketball_map)/map/basketball_map" />
+    <node 
+        name="map_save" 
+        pkg="map_server" 
+        type="map_saver" 
+        args="-f $(arg filename)">
+        <remap from="/map" to="/visual_map"/>
+        
+
+    </node>
+</launch>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- 在参数服务器载入urdf文件 -->
+    <param name="robot_description" command="python3 $(find sit_basketball_description)/scripts/basketball_description.py" />
+    <!-- 启动串口协议 -->
+    <node pkg="sit_protocol" type="protocol_forwarder_node" name="protocol_forwarder" output="screen" respawn="true">
+        <!-- 串口自发现，无须设置串口号与波特率 -->
+    </node>
+    <!-- 启动底盘节点 -->
+    <node pkg="sit_chassis" type="three_chassis_node" name="chassis_node" output="screen" respawn="true">
+        <!-- 运动系数 -->
+        <param name="k" value="-4772.44" />
+        <!-- 底盘旋转半径 -->
+        <param name="radius" value="0.1900" />
+    </node>
+    <!-- 启动IMU节点 -->
+    <node name="chassis_imu" pkg="sit_chassis_imu" type="chassis_imu_node" output="screen" respawn="true" />
+
+    <!-- 启动里程计节点 -->
+    <node pkg="sit_odom" type="odom_node" name="odom_node"></node>
+
+    <!-- 启动深度相机 -->
+    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"></include>
+
+    <!-- 启动导航节点 -->
+    <!-- 启动深度相机转激光雷达节点 -->
+    <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
+        <remap from="image" to="/camera/aligned_depth_to_color/image_raw" />
+        <remap from="camera_info" to="/camera/aligned_depth_to_color/camera_info" />
+        <!-- <param name="output_frame_id" value="camera_color_optical_frame"  /> -->
+        <!-- <param name="scan_time" value="0.033" /> -->
+        <param name="range_min" value="0.28" />
+        <param name="range_max" value="3" />
+        <param name="output_frame_id" value="base_link" />
+    </node>
+    <!-- 
+    启动铲子节点
+    <node pkg="sit_basketball_shovel" type="shovel_main.py" name="basketball_shovel" output="screen"></node>
+
+    启动电磁炮节点
+    <node pkg="sit_basketball_shoot" type="shoot_main.py" name="basketball_shoot" output="screen"></node> -->
+</launch>

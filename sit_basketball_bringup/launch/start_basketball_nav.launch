@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- 启动地图服务器 -->
+    <node 
+        name="sit_basketball_map" 
+        pkg="sit_basketball_map" 
+        type="main.py" 
+        output="screen"/>
+
+    <!-- 启动导航 -->
+    <include file="$(find sit_basketball_navigation)/launch/move_base.launch"/>
+    
+    <!-- 加载机器人模型 -->
+    <arg name="model_python" default="python3 $(find sit_basketball_description)/scripts/basketball_description.py" />
+    <!-- 在参数服务器载入urdf文件 -->
+    <param name="robot_description" command="$(arg model_python)" />
+    <!-- 机器人状态发布节点 (发布所有静态tf)-->
+    <node name="robot_state_publisher" 
+        pkg="robot_state_publisher" 
+        type="robot_state_publisher" 
+        output="screen" />
+
+    <!-- 启动篮球定位服务器 -->
+    <node pkg="sit_basketball_location" type="node" name="sit_basketball_location" output="screen" respawn="true" respawn_delay="0" />
+    <!-- 启动rviz -->
+    <!-- <node 
+        name="rviz" 
+        pkg="rviz" 
+        type="rviz" 
+        args="-d $(find sit_basketball_bringup)/rviz/nav.rviz"
+        output="screen"/> -->
+</launch>

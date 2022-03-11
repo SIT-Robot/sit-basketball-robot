@@ -1,0 +1,15 @@
+<launch>
+
+    <node 
+        name="sit_basketball_map" 
+        pkg="sit_basketball_map" 
+        type="main.py" 
+        output="screen"/>
+    
+    <node 
+        name="rviz" 
+        pkg="rviz" 
+        type="rviz" 
+        args="-d $(find sit_basketball_map)/config/view_map.rviz"
+        output="screen"/>
+</launch>

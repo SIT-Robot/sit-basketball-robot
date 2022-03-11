@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/zzq/code/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/zzq/code/catkin_ws/src/handsfree/handsfree_2dslam/include/**",
+        "/home/zzq/code/catkin_ws/src/handsfree/handsfree_controller/include/**",
+        "/home/zzq/code/catkin_ws/src/handsfree/handsfree_hw/include/**",
+        "/home/zzq/code/catkin_ws/src/hello_demo/include/**",
+        "/home/zzq/code/catkin_ws/src/orb_slam3/include/**",
+        "/home/zzq/code/catkin_ws/src/serial/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
